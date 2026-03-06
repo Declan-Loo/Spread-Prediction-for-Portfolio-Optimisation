@@ -6,3 +6,4 @@ lseg-data
 python-dotenv
 streamlit
 plotly
+yfinance

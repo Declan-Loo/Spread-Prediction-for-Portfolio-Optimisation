@@ -6,3 +6,4 @@ from .refinitiv_client import (
     open_session,
     close_session,
 )
+from .yfinance_sp500 import get_sp500_prices

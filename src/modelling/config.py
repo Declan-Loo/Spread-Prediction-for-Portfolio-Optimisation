@@ -64,7 +64,7 @@ TICKER_NAMES = {
 }
 
 # Date ranges
-TRAIN_START = "2020-01-01"
+TRAIN_START = "2019-01-01"
 TRAIN_END   = "2023-12-31"   # in-sample
 TEST_START  = "2024-01-01"   # out-of-sample
 TEST_END    = "2025-12-31"

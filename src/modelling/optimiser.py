@@ -241,3 +241,44 @@ def efficient_frontier(
             )
 
     return pd.DataFrame(records)
+
+
+def estimate_expected_returns(
+    returns: pd.DataFrame,
+    window: int | None = None,
+    annualise: bool = True,
+    periods_per_year: int = 252,
+) -> pd.Series:
+    """
+    Estimate expected returns for each column in a return DataFrame.
+
+    This function is used for spread-based return estimation in the MPT
+    optimiser, providing a simple alternative to naive full-sample means.
+
+    Parameters
+    ----------
+    returns : pd.DataFrame
+        Daily return series (e.g. spread returns for each pair).
+    window : int | None
+        Optional lookback window (in periods). If provided, use the last
+        `window` observations for the mean; otherwise use the full sample.
+    annualise : bool
+        If True, scale the expected daily mean by periods_per_year.
+    periods_per_year : int
+        Number of periods per year (252 for trading days).
+
+    Returns
+    -------
+    pd.Series
+        Estimated expected (annualised) return per column.
+    """
+    if window is not None and window > 0:
+        sample = returns.tail(window)
+    else:
+        sample = returns
+
+    mean_daily = sample.mean()
+
+    if annualise:
+        return mean_daily * periods_per_year
+    return mean_daily

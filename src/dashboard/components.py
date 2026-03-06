@@ -110,6 +110,35 @@ def plot_cointegration_results(screening_df: pd.DataFrame) -> go.Figure:
     return fig
 
 
+def plot_cumulative_returns_multi(
+    returns_dict: dict[str, pd.Series],
+    title: str = "Cumulative returns",
+) -> go.Figure:
+    """
+    Plot multiple daily-return series as normalised cumulative returns (start=1).
+    """
+    fig = go.Figure()
+    colours = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A", "#19D3F3"]
+    for i, (name, ret) in enumerate(returns_dict.items()):
+        r = ret.dropna()
+        if r.empty:
+            continue
+        cum = (1 + r).cumprod()
+        cum = cum / cum.iloc[0]
+        fig.add_trace(go.Scatter(
+            x=cum.index, y=cum.values,
+            name=name, line=dict(color=colours[i % len(colours)]),
+        ))
+    fig.update_layout(
+        title=title,
+        yaxis_title="Cumulative return (normalised)",
+        height=400,
+        margin=dict(t=40, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
 def plot_cumulative_returns(
     strategy: pd.Series,
     y_bh: pd.Series,
