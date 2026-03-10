@@ -5,5 +5,7 @@ from .refinitiv_client import (
     get_ohlcv,
     open_session,
     close_session,
+    get_risk_free_rate,
+    get_risk_free_daily,
 )
 from .yfinance_sp500 import get_sp500_prices

@@ -18,7 +18,7 @@ from .metrics import (
 )
 
 
-# Default risk-free rate (e.g. 3-month T-bill), annualised
+# Default risk-free rate (e.g. 3-month T-bill), annualised - obtained from averaging the risk-free rate in training period
 DEFAULT_RF_ANNUAL = 0.02
 PERIODS_PER_YEAR = 252
 

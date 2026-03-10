@@ -98,34 +98,18 @@ def compute_hurst_exponent(series: pd.Series, max_lag: int = 100) -> float:
     max_lag = min(max_lag, n // 2)
 
     lags = range(2, max_lag + 1)
-    rs_values = []
+    tau = []
 
     for lag in lags:
-        n_subseries = n // lag
-        rs_sub = []
-        for i in range(n_subseries):
-            sub = series_clean[i * lag : (i + 1) * lag]
-            mean_sub = np.mean(sub)
-            deviate = np.cumsum(sub - mean_sub)
-            r = np.max(deviate) - np.min(deviate)
-            s = np.std(sub, ddof=1)
-            if s > 0:
-                rs_sub.append(r / s)
-        if rs_sub:
-            rs_values.append(np.mean(rs_sub))
-        else:
-            rs_values.append(np.nan)
+        # Use variance of differences at each lag
+        tau.append(np.std(np.subtract(series_clean[lag:], series_clean[:-lag])))
 
-    # Fit log(R/S) = H * log(lag) + c
-    valid = ~np.isnan(rs_values)
-    log_lags = np.log(list(lags))[valid]
-    log_rs = np.log(np.array(rs_values)[valid])
-
-    if len(log_lags) < 2:
-        return np.nan
-
-    poly = np.polyfit(log_lags, log_rs, 1)
+    # Fit log(tau) = H * log(lag) + c
+    log_lags = np.log(list(lags))
+    log_tau  = np.log(tau)
+    poly = np.polyfit(log_lags, log_tau, 1)
     return float(poly[0])
+
 
 
 def spread_summary(

@@ -223,19 +223,27 @@ def get_price_timeseries(tickers, start=None, end=None, interval="1d", fields=No
 
         if need_before:
             gap_end = cached_start - timedelta(days=1)
+            # Roll back to nearest preceding business day
+            gap_end = pd.Timestamp(np.busday_offset(gap_end.date(), 0, roll='preceding'))
             if start_dt <= gap_end:
                 print(f"[cache partial] Fetching {start_dt.date()} → {gap_end.date()}")
-                fetched_parts.append(
-                    _fetch_from_lseg(instruments, fields, interval, start_dt, gap_end)
-                )
+                try:
+                    fetched_parts.append(
+                        _fetch_from_lseg(instruments, fields, interval, start_dt, gap_end)
+                    )
+                except ValueError as e:
+                    print(f"[cache partial] Skipping (no trading data): {e}")
 
         if need_after:
             gap_start = cached_end + timedelta(days=1)
             if gap_start <= end_dt:
                 print(f"[cache partial] Fetching {gap_start.date()} → {end_dt.date()}")
-                fetched_parts.append(
-                    _fetch_from_lseg(instruments, fields, interval, gap_start, end_dt)
-                )
+                try:
+                    fetched_parts.append(
+                        _fetch_from_lseg(instruments, fields, interval, gap_start, end_dt)
+                    )
+                except ValueError as e:
+                    print(f"[cache partial] Skipping (no trading data): {e}")
 
         if fetched_parts:
             # Merge new data with cached data
@@ -288,3 +296,57 @@ def get_market_cap(tickers, start=None, end=None, interval="1d", use_cache=True)
     )
 
     return df 
+
+def get_risk_free_rate(
+    start=None,
+    end=None,
+    interval="1d",
+    use_cache=True,
+    annualise=False,
+):
+    """
+    Fetch 3M US T-bill yield from LSEG and return as a time series.
+
+    Returns a pd.Series indexed by Date:
+    - If annualise=False (default): decimal annual yield, e.g. 0.025 = 2.5%.
+    - If annualise=True: constant average annual yield over the sample.
+    """
+    # 3M US T-bill rate (check RIC in Workspace if needed)
+    tickers = ["US3MT=RR"]
+    fields = ["A_YLD_1"]  # yield in percent
+
+    df = get_price_timeseries(
+        tickers=tickers,
+        start=start,
+        end=end,
+        interval=interval,
+        fields=fields,
+        use_cache=use_cache,
+    )
+
+    # Single ticker, single field → Series
+    yld_pct = df.iloc[:, 0]              # e.g. 4.25 = 4.25%
+    yld_annual = yld_pct / 100.0         # 0.0425
+
+    if annualise:
+        return float(yld_annual.mean())  # e.g. 0.019 ≈ 1.9% p.a.
+
+    yld_annual.name = "rf_annual"
+    return yld_annual
+
+
+def get_risk_free_daily(start=None, end=None, use_cache=True):
+    """
+    Daily risk-free rate (decimal per day) from 3M T-bill yield.
+    """
+    rf_annual = get_risk_free_rate(
+        start=start,
+        end=end,
+        interval="1d",
+        use_cache=use_cache,
+        annualise=False,
+    )
+
+    rf_daily = rf_annual / 252.0
+    rf_daily.name = "rf_daily"
+    return rf_daily
