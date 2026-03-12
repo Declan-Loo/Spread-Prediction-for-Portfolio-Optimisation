@@ -19,7 +19,9 @@ from .spread_analysis import (
     compute_spread,
     compute_zscore,
     compute_half_life,
+    compute_rolling_half_life,
     compute_hurst_exponent,
+    compute_rolling_zscore,
     spread_summary,
 )
 

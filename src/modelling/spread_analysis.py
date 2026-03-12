@@ -110,7 +110,55 @@ def compute_hurst_exponent(series: pd.Series, max_lag: int = 100) -> float:
     poly = np.polyfit(log_lags, log_tau, 1)
     return float(poly[0])
 
+def compute_rolling_half_life(spread: pd.Series, window: int = 252, cap: float = 365.0) -> pd.Series:
+    """
+    Rolling half-life of mean reversion using a sliding window.
 
+    At each time step t, fits the OU model on spread[t-window:t]
+    and returns the half-life estimate.
+
+    Parameters
+    ----------
+    spread : pd.Series
+        Spread time series.
+    window : int
+        Rolling window size in trading days (default: 252 = 1 year).
+
+    Returns
+    -------
+    pd.Series of rolling half-life values (NaN for first `window` observations).
+    """
+    half_lives = [np.nan] * window
+
+    for w in range(window, len(spread)):
+        hl = compute_half_life(spread.iloc[w - window : w])
+        half_lives.append(hl)
+
+    return pd.Series(half_lives, index=spread.index, name="rolling_half_life")
+
+def compute_rolling_zscore(spread: pd.Series, window: int = 60) -> pd.Series:
+    """
+    Rolling z-score of the spread using a sliding window.
+
+    At each time step t, computes the z-score using the rolling mean
+    and standard deviation over spread[t-window:t].
+
+    Parameters
+    ----------
+    spread : pd.Series
+        Spread time series.
+    window : int
+        Rolling window size in trading days (default: 60).
+
+    Returns
+    -------
+    pd.Series of rolling z-scores (NaN for first `window` observations).
+    """
+    rolling_mean = spread.rolling(window=window).mean()
+    rolling_std  = spread.rolling(window=window).std(ddof=1)
+    zscore = (spread - rolling_mean) / rolling_std
+    zscore.name = "rolling_zscore"
+    return zscore
 
 def spread_summary(
     y: pd.Series,
