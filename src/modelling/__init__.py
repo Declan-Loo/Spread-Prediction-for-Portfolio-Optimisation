@@ -25,6 +25,18 @@ from .spread_analysis import (
     spread_summary,
 )
 
+from .return_estimation import (
+    compute_spread_returns,
+    build_spread_return_matrix,
+    historical_mean_return,
+    ewma_return,
+    ou_expected_return,
+    build_ou_expected_returns,
+    sample_covariance,
+    shrinkage_covariance,
+    spread_vs_traditional_estimates,
+)
+
 from .optimiser import (
     ols_hedge_ratio,
     rolling_hedge_ratio,
@@ -52,8 +64,20 @@ __all__ = [
     "compute_spread",
     "compute_zscore",
     "compute_half_life",
+    "compute_rolling_half_life",
     "compute_hurst_exponent",
+    "compute_rolling_zscore",
     "spread_summary",
+    # Return estimation
+    "compute_spread_returns",
+    "build_spread_return_matrix",
+    "historical_mean_return",
+    "ewma_return",
+    "ou_expected_return",
+    "build_ou_expected_returns",
+    "sample_covariance",
+    "shrinkage_covariance",
+    "spread_vs_traditional_estimates",
     # Optimiser
     "ols_hedge_ratio",
     "rolling_hedge_ratio",

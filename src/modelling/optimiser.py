@@ -3,12 +3,22 @@ Modern Portfolio Theory optimiser for pairs trading portfolios.
 
 Provides OLS hedge-ratio estimation (static and rolling) and Markowitz
 mean-variance optimisation across multiple pair-spread return streams.
+
+All optimisation functions accept optional ``expected_returns`` and
+``cov_matrix`` parameters so that custom return estimates (e.g. OU-implied
+spread returns from ``return_estimation``) can be plugged in.  When omitted,
+the historical sample mean and covariance are used (traditional MPT).
 """
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from scipy.optimize import minimize
+
+
+# ---------------------------------------------------------------------------
+# Hedge-ratio estimation
+# ---------------------------------------------------------------------------
 
 
 def ols_hedge_ratio(y: pd.Series, x: pd.Series) -> tuple[float, float]:
@@ -65,6 +75,31 @@ def rolling_hedge_ratio(
 # Markowitz mean-variance utilities
 # ---------------------------------------------------------------------------
 
+
+def _resolve_inputs(
+    returns: pd.DataFrame,
+    expected_returns: pd.Series | np.ndarray | None = None,
+    cov_matrix: pd.DataFrame | np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Resolve expected-return vector and covariance matrix.
+
+    If ``expected_returns`` or ``cov_matrix`` are not provided, fall back
+    to the sample mean and sample covariance of ``returns``.
+    """
+    if expected_returns is not None:
+        mu = np.asarray(expected_returns, dtype=float)
+    else:
+        mu = returns.mean().values
+
+    if cov_matrix is not None:
+        cov = np.asarray(cov_matrix, dtype=float)
+    else:
+        cov = returns.cov().values
+
+    return mu, cov
+
+
 def _portfolio_stats(
     weights: np.ndarray,
     mean_returns: np.ndarray,
@@ -79,7 +114,10 @@ def _portfolio_stats(
     return port_return, port_vol
 
 
-def minimum_variance_weights(returns: pd.DataFrame) -> np.ndarray:
+def minimum_variance_weights(
+    returns: pd.DataFrame,
+    cov_matrix: pd.DataFrame | np.ndarray | None = None,
+) -> np.ndarray:
     """
     Minimum-variance portfolio weights (long-only constraint).
 
@@ -87,13 +125,17 @@ def minimum_variance_weights(returns: pd.DataFrame) -> np.ndarray:
     ----------
     returns : pd.DataFrame
         Daily returns for each asset / spread (columns).
+    cov_matrix : pd.DataFrame | np.ndarray | None
+        Custom covariance matrix (e.g. shrinkage estimator from
+        ``return_estimation.shrinkage_covariance``).  If None, uses
+        the sample covariance of ``returns``.
 
     Returns
     -------
     np.ndarray of portfolio weights summing to 1.
     """
     n = returns.shape[1]
-    cov = returns.cov().values
+    _, cov = _resolve_inputs(returns, cov_matrix=cov_matrix)
 
     def objective(w):
         return np.dot(w, np.dot(cov, w))
@@ -110,6 +152,8 @@ def minimum_variance_weights(returns: pd.DataFrame) -> np.ndarray:
 
 def max_sharpe_weights(
     returns: pd.DataFrame,
+    expected_returns: pd.Series | np.ndarray | None = None,
+    cov_matrix: pd.DataFrame | np.ndarray | None = None,
     rf_annual: float = 0.02,
     periods_per_year: int = 252,
 ) -> np.ndarray:
@@ -120,6 +164,11 @@ def max_sharpe_weights(
     ----------
     returns : pd.DataFrame
         Daily returns for each asset / spread (columns).
+    expected_returns : pd.Series | np.ndarray | None
+        Custom *daily* expected-return vector (e.g. OU-implied estimates
+        from ``return_estimation``).  If None, uses ``returns.mean()``.
+    cov_matrix : pd.DataFrame | np.ndarray | None
+        Custom covariance matrix.  If None, uses ``returns.cov()``.
     rf_annual : float
         Annualised risk-free rate.
     periods_per_year : int
@@ -130,8 +179,7 @@ def max_sharpe_weights(
     np.ndarray of portfolio weights summing to 1.
     """
     n = returns.shape[1]
-    mean_ret = returns.mean().values
-    cov = returns.cov().values
+    mean_ret, cov = _resolve_inputs(returns, expected_returns, cov_matrix)
 
     def neg_sharpe(w):
         port_ret, port_vol = _portfolio_stats(w, mean_ret, cov, periods_per_year)
@@ -151,11 +199,25 @@ def max_sharpe_weights(
 
 def mean_variance_weights(
     returns: pd.DataFrame,
+    expected_returns: pd.Series | np.ndarray | None = None,
+    cov_matrix: pd.DataFrame | np.ndarray | None = None,
     rf_annual: float = 0.02,
     periods_per_year: int = 252,
 ) -> dict:
     """
     Convenience wrapper returning both max-Sharpe and min-variance portfolios.
+
+    Parameters
+    ----------
+    returns : pd.DataFrame
+        Daily returns for each asset / spread.
+    expected_returns : pd.Series | np.ndarray | None
+        Custom daily expected-return vector.  Passed through to
+        ``max_sharpe_weights`` (min-variance does not use it).
+    cov_matrix : pd.DataFrame | np.ndarray | None
+        Custom covariance matrix.  Passed to both optimisers.
+    rf_annual : float
+    periods_per_year : int
 
     Returns
     -------
@@ -164,11 +226,12 @@ def mean_variance_weights(
         max_sharpe_return, max_sharpe_vol,
         min_var_return, min_var_vol
     """
-    mean_ret = returns.mean().values
-    cov = returns.cov().values
+    mean_ret, cov = _resolve_inputs(returns, expected_returns, cov_matrix)
 
-    w_sharpe = max_sharpe_weights(returns, rf_annual, periods_per_year)
-    w_minvar = minimum_variance_weights(returns)
+    w_sharpe = max_sharpe_weights(
+        returns, expected_returns, cov_matrix, rf_annual, periods_per_year,
+    )
+    w_minvar = minimum_variance_weights(returns, cov_matrix)
 
     sr_ret, sr_vol = _portfolio_stats(w_sharpe, mean_ret, cov, periods_per_year)
     mv_ret, mv_vol = _portfolio_stats(w_minvar, mean_ret, cov, periods_per_year)
@@ -185,6 +248,8 @@ def mean_variance_weights(
 
 def efficient_frontier(
     returns: pd.DataFrame,
+    expected_returns: pd.Series | np.ndarray | None = None,
+    cov_matrix: pd.DataFrame | np.ndarray | None = None,
     n_points: int = 50,
     rf_annual: float = 0.02,
     periods_per_year: int = 252,
@@ -193,16 +258,27 @@ def efficient_frontier(
     Compute the efficient frontier: for a range of target returns, find the
     minimum-volatility portfolio.
 
+    Parameters
+    ----------
+    returns : pd.DataFrame
+        Daily returns for each asset / spread.
+    expected_returns : pd.Series | np.ndarray | None
+        Custom daily expected-return vector.
+    cov_matrix : pd.DataFrame | np.ndarray | None
+        Custom covariance matrix.
+    n_points : int
+    rf_annual : float
+    periods_per_year : int
+
     Returns
     -------
     pd.DataFrame with columns ['return', 'volatility', 'sharpe'].
     """
     n = returns.shape[1]
-    mean_ret = returns.mean().values
-    cov = returns.cov().values
+    mean_ret, cov = _resolve_inputs(returns, expected_returns, cov_matrix)
 
     # Anchor on the min-var and max-return portfolios
-    w_min = minimum_variance_weights(returns)
+    w_min = minimum_variance_weights(returns, cov_matrix)
     ret_min, _ = _portfolio_stats(w_min, mean_ret, cov, periods_per_year)
     ret_max = float(np.max(mean_ret)) * periods_per_year
 
@@ -241,44 +317,3 @@ def efficient_frontier(
             )
 
     return pd.DataFrame(records)
-
-
-def estimate_expected_returns(
-    returns: pd.DataFrame,
-    window: int | None = None,
-    annualise: bool = True,
-    periods_per_year: int = 252,
-) -> pd.Series:
-    """
-    Estimate expected returns for each column in a return DataFrame.
-
-    This function is used for spread-based return estimation in the MPT
-    optimiser, providing a simple alternative to naive full-sample means.
-
-    Parameters
-    ----------
-    returns : pd.DataFrame
-        Daily return series (e.g. spread returns for each pair).
-    window : int | None
-        Optional lookback window (in periods). If provided, use the last
-        `window` observations for the mean; otherwise use the full sample.
-    annualise : bool
-        If True, scale the expected daily mean by periods_per_year.
-    periods_per_year : int
-        Number of periods per year (252 for trading days).
-
-    Returns
-    -------
-    pd.Series
-        Estimated expected (annualised) return per column.
-    """
-    if window is not None and window > 0:
-        sample = returns.tail(window)
-    else:
-        sample = returns
-
-    mean_daily = sample.mean()
-
-    if annualise:
-        return mean_daily * periods_per_year
-    return mean_daily

@@ -282,3 +282,173 @@ def format_metrics_table(metrics: dict) -> pd.DataFrame:
     return pd.DataFrame(
         list(fmt.items()), columns=["Metric", "Value"]
     )
+
+
+# ---------------------------------------------------------------------------
+# Return estimation charts
+# ---------------------------------------------------------------------------
+
+
+def plot_return_estimates_comparison(
+    estimates_df: pd.DataFrame,
+) -> go.Figure:
+    """
+    Grouped bar chart comparing return estimates across methods.
+
+    Parameters
+    ----------
+    estimates_df : pd.DataFrame
+        Index = pair labels, columns = estimation methods
+        (e.g. "OU-implied", "Historical mean", "EWMA").
+        Values are annualised expected returns.
+    """
+    fig = go.Figure()
+    colours = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A"]
+    for i, col in enumerate(estimates_df.columns):
+        fig.add_trace(go.Bar(
+            x=estimates_df.index,
+            y=estimates_df[col],
+            name=col,
+            marker_color=colours[i % len(colours)],
+            text=estimates_df[col].map(lambda v: f"{v:.2%}"),
+            textposition="outside",
+        ))
+    fig.add_hline(y=0, line=dict(color="grey", dash="dot", width=1))
+    fig.update_layout(
+        barmode="group",
+        yaxis_title="Annualised expected return",
+        yaxis_tickformat=".1%",
+        height=400,
+        margin=dict(t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_rolling_return_estimate(
+    returns: pd.Series,
+    window: int = 60,
+    pair_label: str = "",
+) -> go.Figure:
+    """
+    Rolling annualised mean return over time — shows estimation stability.
+    """
+    rolling_mu = returns.rolling(window).mean() * 252
+    ewma_mu = returns.ewm(span=window).mean() * 252
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=rolling_mu.index, y=rolling_mu.values,
+        name=f"Rolling {window}d mean",
+        line=dict(color="#636EFA"),
+    ))
+    fig.add_trace(go.Scatter(
+        x=ewma_mu.index, y=ewma_mu.values,
+        name=f"EWMA (span={window})",
+        line=dict(color="#EF553B", dash="dash"),
+    ))
+    fig.add_hline(
+        y=float(returns.mean() * 252),
+        line=dict(color="grey", dash="dot", width=1),
+        annotation_text="Full-sample mean",
+        annotation_position="right",
+    )
+    fig.update_layout(
+        title=f"Rolling return estimate: {pair_label}" if pair_label else None,
+        yaxis_title="Annualised return estimate",
+        yaxis_tickformat=".1%",
+        height=350,
+        margin=dict(t=40, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Backtest charts
+# ---------------------------------------------------------------------------
+
+
+def plot_drawdown(daily_returns: pd.Series) -> go.Figure:
+    """
+    Underwater / drawdown chart from a daily return series.
+    """
+    cum = (1 + daily_returns).cumprod()
+    running_max = cum.cummax()
+    drawdown = (cum - running_max) / running_max
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=drawdown.index, y=drawdown.values,
+        fill="tozeroy",
+        fillcolor="rgba(239,85,59,0.2)",
+        line=dict(color="#EF553B", width=1),
+        name="Drawdown",
+    ))
+    fig.update_layout(
+        yaxis_title="Drawdown",
+        yaxis_tickformat=".1%",
+        height=300,
+        margin=dict(t=20, b=20),
+    )
+    return fig
+
+
+def plot_returns_distribution(
+    returns_dict: dict[str, pd.Series],
+) -> go.Figure:
+    """
+    Overlaid histograms of daily return distributions.
+    """
+    fig = go.Figure()
+    colours = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA"]
+    for i, (name, ret) in enumerate(returns_dict.items()):
+        r = ret.dropna()
+        if r.empty:
+            continue
+        fig.add_trace(go.Histogram(
+            x=r.values,
+            name=name,
+            marker_color=colours[i % len(colours)],
+            opacity=0.6,
+            nbinsx=80,
+        ))
+    fig.update_layout(
+        barmode="overlay",
+        xaxis_title="Daily return",
+        xaxis_tickformat=".2%",
+        yaxis_title="Frequency",
+        height=350,
+        margin=dict(t=20, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_rolling_sharpe(
+    daily_returns: pd.Series,
+    window: int = 60,
+    rf_annual: float = 0.02,
+) -> go.Figure:
+    """
+    Rolling Sharpe ratio over time.
+    """
+    rf_daily = rf_annual / 252
+    excess = daily_returns - rf_daily
+    rolling_mean = excess.rolling(window).mean()
+    rolling_std = daily_returns.rolling(window).std(ddof=1)
+    rolling_sr = (rolling_mean / rolling_std) * np.sqrt(252)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=rolling_sr.index, y=rolling_sr.values,
+        line=dict(color="#636EFA"),
+        name=f"Rolling {window}d Sharpe",
+    ))
+    fig.add_hline(y=0, line=dict(color="grey", dash="dot", width=1))
+    fig.update_layout(
+        yaxis_title="Sharpe ratio (annualised)",
+        height=300,
+        margin=dict(t=20, b=20),
+    )
+    return fig
