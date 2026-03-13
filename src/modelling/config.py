@@ -70,3 +70,5 @@ TEST_START  = "2024-01-01"   # out-of-sample
 TEST_END    = "2025-12-31"
 
 INTERVAL = "1d"
+
+RISK_FREE_RATE = 0.02

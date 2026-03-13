@@ -7,6 +7,7 @@ from .config import (
     TEST_END,
     INTERVAL,
     TICKER_NAMES,
+    RISK_FREE_RATE,
 )
 
 from .cointegration import (
@@ -56,6 +57,7 @@ __all__ = [
     "TEST_END",
     "INTERVAL",
     "TICKER_NAMES",
+    "RISK_FREE_RATE",
     # Cointegration
     "adf_test",
     "engle_granger_test",

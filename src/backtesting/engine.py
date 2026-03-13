@@ -28,6 +28,16 @@ class BacktestConfig:
     transaction_cost_bps: float = 10.0
     initial_capital: float = 100_000.0
 
+    def __post_init__(self):
+        if self.exit_z >= self.entry_z:
+            raise ValueError(
+                f"exit_z ({self.exit_z}) must be < entry_z ({self.entry_z})"
+            )
+        if self.stop_loss_z <= self.entry_z:
+            raise ValueError(
+                f"stop_loss_z ({self.stop_loss_z}) must be > entry_z ({self.entry_z})"
+            )
+
 
 @dataclass
 class BacktestResult:
@@ -168,8 +178,12 @@ class PairsBacktestEngine:
         """
         Daily mark-to-market PnL with transaction costs.
 
-        The spread return on day t is:
-            r_t = position_{t-1} * (Δy_t - hedge_ratio * Δx_t) / capital
+        Position sizing: deploy full initial capital into the spread.
+        One spread unit costs  y_price + |hedge_ratio| * x_price;
+        n_units = initial_capital / notional_per_unit.
+
+        The strategy return on day t is:
+            r_t = position_{t-1} * n_units_{t-1} * (Δy_t - β·Δx_t) / capital
         """
         cfg = self.config
 
@@ -177,15 +191,17 @@ class PairsBacktestEngine:
         dy = y_prices.diff()
         dx = x_prices.diff()
 
-        # Spread dollar PnL per unit position
-        spread_pnl = positions.shift(1) * (dy - hedge_ratio * dx)
+        # Notional per spread unit and number of units to deploy full capital
+        notional_per_unit = y_prices + abs(hedge_ratio) * x_prices
+        n_units = cfg.initial_capital / notional_per_unit
+
+        # Spread dollar PnL scaled to full capital deployment
+        spread_pnl = positions.shift(1) * n_units.shift(1) * (dy - hedge_ratio * dx)
         spread_pnl = spread_pnl.fillna(0.0)
 
-        # Transaction costs on position changes
+        # Transaction costs on position changes (proportional to capital traded)
         position_change = positions.diff().abs().fillna(0.0)
-        # Cost proportional to notional (approximate using y price level)
-        notional_traded = position_change * (y_prices + hedge_ratio * x_prices)
-        tc = notional_traded * (cfg.transaction_cost_bps / 10_000)
+        tc = position_change * cfg.initial_capital * (cfg.transaction_cost_bps / 10_000)
 
         net_pnl = spread_pnl - tc
         strategy_return = net_pnl / cfg.initial_capital

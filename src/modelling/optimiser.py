@@ -145,10 +145,10 @@ def minimum_variance_weights(
     x0 = np.ones(n) / n
 
     result = minimize(
-        objective, x0, method="SLSQP", bounds=bounds, constraints=constraints
+        objective, x0, method="SLSQP", bounds=bounds, constraints=constraints,
+        options={"ftol": 1e-12, "maxiter": 1000}   # ← add this
     )
     return result.x
-
 
 def max_sharpe_weights(
     returns: pd.DataFrame,
