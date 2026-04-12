@@ -738,7 +738,7 @@ Spread mean $\mu_S = 0$ by construction (demeaned OLS residuals). Source: Author
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/01_spread_levels.pdf}
+    \includegraphics[width=\textwidth]{figures/01_spread_levels.pdf}
     \caption{Spread levels with $\pm1\sigma$ and $\pm2\sigma$ bands for each
     cointegrated pair over the in-sample period (January 2019 -- December 2023).
     The spread is defined as $S_t = \ln P^y_t - \hat{\beta}\ln P^x_t - \hat{\alpha}$.
@@ -748,7 +748,7 @@ Spread mean $\mu_S = 0$ by construction (demeaned OLS residuals). Source: Author
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/01_spread_zscores.pdf}
+    \includegraphics[width=\textwidth]{figures/01_spread_zscores.pdf}
     \caption{Rolling $z$-scores (60-day window) for the two cointegrated pairs
     over the in-sample period (January 2019 -- December 2023). Dotted lines mark
     the $\pm2\sigma$ entry thresholds. The $z$-score at the end of the training
@@ -759,7 +759,7 @@ Spread mean $\mu_S = 0$ by construction (demeaned OLS residuals). Source: Author
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/01_spread_rolling_halflife.pdf}
+    \includegraphics[width=\textwidth]{figures/01_spread_rolling_halflife.pdf}
     \caption{Rolling half-life of mean reversion (252-day window, EWM 21-day smoothed).
     Dashed line denotes the 60-day tradeability threshold.
     Shaded regions indicate periods where the smoothed half-life exceeded the threshold.
@@ -797,7 +797,7 @@ DAL/UAL & 0.000 & $+$0.026 & 0.076 & 0.119 & $-$0.201 & $-$0.199 & $+$0.175 & $+
 \end{tabular}
 
 \par\smallskip
-\begin{minipage}{15cm}
+\begin{minipage}{\linewidth}
 \small
 The GS/MS OOS minimum (+0.067) exceeds the IS mean (0.000), indicating the spread never reverted to its historical equilibrium during the OOS period. \\
 Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
@@ -825,7 +825,7 @@ DAL/UAL & 0.009 & 0.583 & 52.9 & 103.1 & 0.414 & 0.421 & 0.872 \\
 \end{tabular}
 
 \par\smallskip
-\begin{minipage}{15cm}
+\begin{minipage}{\linewidth}
 \small
 Neither spread remains stationary OOS using IS hedge ratios. KO/PEP Hurst crosses above 0.5, indicating transition to near-random-walk behaviour.\\
 Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
@@ -913,7 +913,7 @@ TGT.N/COST.O  & 0.925          & 0.162          &  0.856 & $-$0.318 & 1.174 & No
 }% end resizebox
 
 \par\smallskip
-\begin{minipage}{15cm}
+\begin{minipage}{\linewidth}
 \small
 $^{\dagger}$NVDA/TSM: OOS $p$-value passes threshold but $y$ fails $I(1)$ test --- cointegration requires both series to be $I(1)$.\\
 KO/PEP hedge ratio sign reversal ($+0.641 \to -0.350$) and DAL/UAL OOS $p$-value surge indicate structural breaks in the cointegrating relationship.\\
@@ -945,12 +945,16 @@ GS.N/MS.N   & 0.005 & 0.019 & No  & 0.452 & 0.010 & No \\
 KO.N/PEP.O  & 0.009 & 0.100 & Yes & 0.622 & 0.010 & No \\
 DAL.N/UAL.O & 0.009 & 0.080 & Yes & 0.584 & 0.010 & No \\
 \bottomrule
-\multicolumn{7}{l}{\small KPSS $p$-value of 0.010 denotes the tabulated lower bound (i.e.\ $p \leq 0.010$); null of stationarity is strongly rejected.} \\
-\multicolumn{7}{l}{\small IS consensus: KO/PEP and DAL/UAL achieve consensus; GS/MS fails KPSS despite low ADF $p$, indicating non-stationarity is borderline.} \\
-\multicolumn{7}{l}{\small OOS: All three pairs lose the MR consensus, consistent with Table~\ref{tab:cointegration_validation}.} \\
-\multicolumn{7}{l}{\small Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.}
 \end{tabular}%
 }
+\par\smallskip
+\begin{minipage}{\linewidth}
+\small
+KPSS $p$-value of 0.010 denotes the tabulated lower bound (i.e.\ $p \leq 0.010$); null of stationarity is strongly rejected.
+IS consensus: KO/PEP and DAL/UAL achieve consensus; GS/MS fails KPSS despite low ADF $p$, indicating non-stationarity is borderline.
+OOS: All three pairs lose the MR consensus, consistent with Table~\ref{tab:cointegration_validation}.
+Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
+\end{minipage}
 \end{table}
 
 Table~\ref{tab:chow_results} presents the Chow test for structural break in the cointegrating
@@ -971,11 +975,13 @@ GS.N/MS.N   & 2406.3 & $<0.001$ & (2, 2007) & Structural break detected \\
 KO.N/PEP.O  & 3078.4 & $<0.001$ & (2, 2007) & Structural break detected \\
 DAL.N/UAL.O &  269.5 & $<0.001$ & (2, 2007) & Structural break detected \\
 \bottomrule
-\multicolumn{5}{l}{\small The $F$-statistic compares the residual sum of squares of separate IS and OOS regressions} \\
-\multicolumn{5}{l}{\small against the pooled regression. All three pairs strongly reject the null at any conventional} \\
-\multicolumn{5}{l}{\small significance level, confirming that the cointegrating relationship is not stable over time.} \\
-\multicolumn{5}{l}{\small Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.}
 \end{tabular}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\small
+The $F$-statistic compares the residual sum of squares of separate IS and OOS regressions against the pooled regression. All three pairs strongly reject the null at any conventional significance level, confirming that the cointegrating relationship is not stable over time.
+Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
+\end{minipage}
 \end{table}
 
 \FloatBarrier
@@ -1000,12 +1006,17 @@ Pair & End-of-IS $z$-Score & OU-Implied $\mu$ (ann.) & Historical $\mu$ (ann.) &
 \midrule
 GS/MS  & $+$1.739 & $-$10.69\% & GS: $+$11.9\%, MS: $+$15.5\% & Spread well above mean & Yes \\
 KO/PEP & $-$0.759 & $+$1.93\%  & KO: $+$6.4\%,\ PEP: $+$8.3\% & Spread below mean      & Yes \\
+DAL/UAL & $+$1.315 & $-$0.24 & Spread well above mean & Yes \\
 \bottomrule
-\multicolumn{6}{l}{\small OU-implied $\mu$ computed via rolling 60-day OU model, annualised at 252 trading days per year.} \\
-\multicolumn{6}{l}{\small Historical $\mu$ is the annualised sample mean of daily returns over the IS period.} \\
-\multicolumn{6}{l}{\small Source: Author's calculations on \texttt{03\_return\_estimation.ipynb}.}
 \end{tabular}%
 }
+\par\smallskip
+\begin{minipage}{\linewidth}
+\small
+OU-implied $\mu$ computed via rolling 60-day OU model, annualised at 252 trading days per year.
+Historical $\mu$ is the annualised sample mean of daily returns over the IS period.
+Source: Author's calculations on \texttt{03\_return\_estimation.ipynb}.
+\end{minipage}
 \end{table}
 
 \begin{figure}[htbp]
@@ -1072,12 +1083,58 @@ weights; the Historical MPT portfolio operates in asset space (GS.N, KO.N, MS.N,
     Buy \& Hold (All Pairs) & 1.245 & $-$27.8\% & $+$74.0\% & 22.9\% & ---       & 1.040 \\
     S\&P 500 (SPY)           & 1.110 & $-$18.9\% & $+$44.3\%  & 16.0\% & ---       & 1.000 \\
     \bottomrule
-    \multicolumn{7}{l}{\small Spread Min-Var ($\mu=0$) assumes zero expected returns; min-var objective is return-agnostic. Risk-free rate: 2\% p.a.} \\
-    \multicolumn{7}{l}{\small Spread Min-Var weights: $\mathbf{w} = [0.35, 0.36, 0.29]$ (GS/MS, KO/PEP, DAL/UAL). Spread Max-Sharpe (OU): $w_{\text{GS/MS}} = 1.0$.} \\
-    \multicolumn{7}{l}{\small Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.}
     \end{tabular}%
     }
+    \par\smallskip
+    \begin{minipage}{\linewidth}
+    \small
+    Spread Min-Var ($\mu=0$) assumes zero expected returns; min-var objective is return-agnostic. Risk-free rate: 2\% p.a.
+    Spread Min-Var weights: $\mathbf{w} = [0.35, 0.36, 0.29]$ (GS/MS, KO/PEP, DAL/UAL). Spread Max-Sharpe (OU): $w_{\text{GS/MS}} = 1.0$.
+    Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.
+    \end{minipage}
 \end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/04_cumulative_returns.pdf}
+    \caption{Cumulative growth of \$1 invested at the start of the OOS period
+    (January 2024 -- December 2025) for the OU-Implied MPT, Historical MPT,
+    equal-weight, and S\&P 500 benchmarks. The OU-Implied and equal-weight
+    portfolios track closely throughout; the Historical MPT underperforms
+    substantially.}
+    \label{fig:oos_cumulative_returns}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/04_drawdown.pdf}
+    \caption{Peak-to-trough drawdown over the OOS period (January 2024 --
+    December 2025). Drawdown is defined as the cumulative loss from the most
+    recent portfolio peak; values closer to zero indicate smaller peak-to-trough
+    losses.}
+    \label{fig:oos_drawdown}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/04_rolling_sharpe.pdf}
+    \caption{Rolling 60-day Sharpe ratio over the OOS period (January 2024 --
+    December 2025). Time-varying risk-adjusted performance computed over a
+    trailing 60-day window. Periods above zero indicate positive risk-adjusted
+    returns in that window.}
+    \label{fig:oos_rolling_sharpe}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/04_weights_bar.pdf}
+    \caption{Minimum-variance portfolio weights for both approaches.
+    (a)~OU-Implied MPT: 46.6\% GS/MS spread, 53.4\% KO/PEP spread.
+    (b)~Historical MPT: 11.7\% GS.N, 48.7\% KO.N, 0.0\% MS.N, 39.7\% PEP.O.
+    The historical allocation concentrates heavily in KO and PEP due to their
+    lower variance, while zeroing out MS.N.}
+    \label{fig:portfolio_weights}
+\end{figure}
 
 \subsection{Per-Pair Mean-Reversion Backtest}
 
@@ -1095,11 +1152,24 @@ weights; the Historical MPT portfolio operates in asset space (GS.N, KO.N, MS.N,
     DAL.N/UAL.O & $-$0.286 & $-$16.0\% & $-$1.2\% & 7.9\% & 8 & 222 & 45.7\%
     \\
     \bottomrule
-    \multicolumn{8}{l}{\small Negative Sharpe ratios are consistent with OOS cointegration breakdown identified in \texttt{02\_cointegration\_validation.ipynb}.} \\
-    \multicolumn{8}{l}{\small Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.}
     \end{tabular}%
     }
+    \par\smallskip
+    \begin{minipage}{\linewidth}
+    \small
+    Negative Sharpe ratios are consistent with OOS cointegration breakdown identified in \texttt{02\_cointegration\_validation.ipynb}.
+    Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.
+    \end{minipage}
 \end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/04_pair_cumulative_returns.pdf}
+    \caption{Cumulative returns from the $z$-score mean-reversion backtest engine
+    for each cointegrated pair over the OOS period (January 2024 -- December 2025).
+    Entry at $\pm2.0\sigma$, exit at $\pm0.5\sigma$, using IS-calibrated thresholds.}
+    \label{fig:pair_cumulative_returns}
+\end{figure}
 
 \subsection{Statistical Tests}
 
@@ -1126,10 +1196,13 @@ Hist Max-Sharpe     & 0.868 & $-$0.477 & $+$2.258 & No \\
 Equal-Weight        & 0.625 & $-$0.792 & $+$2.051 & No \\
 S\&P 500 (SPY)      & 1.110 & $-$0.227 & $+$2.506 & No \\
 \bottomrule
-\multicolumn{5}{l}{\small No strategy achieves a CI lower bound strictly above zero, reflecting the} \\
-\multicolumn{5}{l}{\small high variance of Sharpe estimates over a 2-year OOS window ($T \approx 501$).} \\
-\multicolumn{5}{l}{\small Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.}
 \end{tabular}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\small
+No strategy achieves a CI lower bound strictly above zero, reflecting the high variance of Sharpe estimates over a 2-year OOS window ($T \approx 501$).
+Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.
+\end{minipage}
 \end{table}
 
 \FloatBarrier
@@ -1153,11 +1226,14 @@ Test & Statistic & $p$-value & Decision \\
 Paired $t$-test         & $t = -0.138$ & 0.890 & Fail to reject $H_0$ \\
 Wilcoxon signed-rank    & $W = 62557$ & 0.922 & Fail to reject $H_0$ \\
 \bottomrule
-\multicolumn{4}{l}{\small Mean daily difference (OU $-$ Hist): $-0.000085$ ($-2.15\%$ annualised).} \\
-\multicolumn{4}{l}{\small Both tests fail to reject $H_0$ at 5\%, confirming that the observed Sharpe} \\
-\multicolumn{4}{l}{\small difference (0.963 vs 0.868) is not statistically significant over this OOS window.} \\
-\multicolumn{4}{l}{\small Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.}
 \end{tabular}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\small
+Mean daily difference (OU $-$ Hist): $-0.000085$ ($-2.15\%$ annualised).
+Both tests fail to reject $H_0$ at 5\%, confirming that the observed Sharpe difference (0.963 vs 0.868) is not statistically significant over this OOS window.
+Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.
+\end{minipage}
 \end{table}
 
 \FloatBarrier
@@ -1251,66 +1327,14 @@ GS.N/MS.N   & 0.903 & $+$29.5\% & $-$15.8\% & 13.1\% \\
 KO.N/PEP.O  & 0.963 & $+$34.8\% & $-$11.5\% & 14.6\% \\
 DAL.N/UAL.O & 0.963 & $+$34.8\% & $-$11.5\% & 14.6\% \\
 \bottomrule
-\multicolumn{5}{l}{\small Dropping KO/PEP or DAL/UAL leaves the portfolio unchanged, indicating} \\
-\multicolumn{5}{l}{\small the optimiser assigns all weight to GS/MS under OU Max-Sharpe. Dropping} \\
-\multicolumn{5}{l}{\small GS/MS reduces Sharpe from 0.963 to 0.903, confirming GS/MS is the} \\
-\multicolumn{5}{l}{\small dominant pair but the result is not entirely driven by it.} \\
-\multicolumn{5}{l}{\small Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.}
 \end{tabular}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\small
+Dropping KO/PEP or DAL/UAL leaves the portfolio unchanged, indicating the optimiser assigns all weight to GS/MS under OU Max-Sharpe. Dropping GS/MS reduces Sharpe from 0.963 to 0.903, confirming GS/MS is the dominant pair but the result is not entirely driven by it.
+Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.
+\end{minipage}
 \end{table}
-
-\FloatBarrier
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/04_cumulative_returns.pdf}
-    \caption{Cumulative growth of \$1 invested at the start of the OOS period
-    (January 2024 -- December 2025) for the OU-Implied MPT, Historical MPT,
-    equal-weight, and S\&P 500 benchmarks. The OU-Implied and equal-weight
-    portfolios track closely throughout; the Historical MPT underperforms
-    substantially.}
-    \label{fig:oos_cumulative_returns}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/04_drawdown.pdf}
-    \caption{Peak-to-trough drawdown over the OOS period (January 2024 --
-    December 2025). Drawdown is defined as the cumulative loss from the most
-    recent portfolio peak; values closer to zero indicate smaller peak-to-trough
-    losses.}
-    \label{fig:oos_drawdown}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/04_rolling_sharpe.pdf}
-    \caption{Rolling 60-day Sharpe ratio over the OOS period (January 2024 --
-    December 2025). Time-varying risk-adjusted performance computed over a
-    trailing 60-day window. Periods above zero indicate positive risk-adjusted
-    returns in that window.}
-    \label{fig:oos_rolling_sharpe}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/04_weights_bar.pdf}
-    \caption{Minimum-variance portfolio weights for both approaches.
-    (a)~OU-Implied MPT: 46.6\% GS/MS spread, 53.4\% KO/PEP spread.
-    (b)~Historical MPT: 11.7\% GS.N, 48.7\% KO.N, 0.0\% MS.N, 39.7\% PEP.O.
-    The historical allocation concentrates heavily in KO and PEP due to their
-    lower variance, while zeroing out MS.N.}
-    \label{fig:portfolio_weights}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/04_pair_cumulative_returns.pdf}
-    \caption{Cumulative returns from the $z$-score mean-reversion backtest engine
-    for each cointegrated pair over the OOS period (January 2024 -- December 2025).
-    Entry at $\pm2.0\sigma$, exit at $\pm0.5\sigma$, using IS-calibrated thresholds.}
-    \label{fig:pair_cumulative_returns}
-\end{figure}
 
 \FloatBarrier
 

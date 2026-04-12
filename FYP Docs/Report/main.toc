@@ -73,46 +73,46 @@
 \contentsline {subsection}{\numberline {5.5.2}Per-Pair Mean-Reversion Backtest}{36}{subsection.5.5.2}%
 \contentsline {subsection}{\numberline {5.5.3}Statistical Tests}{36}{subsection.5.5.3}%
 \contentsline {subsubsection}{Bootstrap Confidence Intervals for Sharpe Ratio}{36}{section*.16}%
-\contentsline {subsubsection}{Paired Test: OU-Implied vs Historical MPT}{37}{section*.17}%
-\contentsline {subsubsection}{Sensitivity to Z-Score Thresholds and Transaction Costs}{37}{section*.18}%
-\contentsline {subsubsection}{Leave-One-Pair-Out Portfolio Robustness}{39}{section*.19}%
-\contentsline {chapter}{\numberline {6}Discussion}{45}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Interpretation of Results}{45}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Does OU-Implied $\mu $ Improve MPT?}{45}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Role of Spread Universe Structure}{45}{section.6.3}%
-\contentsline {section}{\numberline {6.4}OOS Cointegration Instability}{45}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Pairs Trading Signal Analysis}{45}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Limitations}{46}{section.6.6}%
-\contentsline {section}{\numberline {6.7}Summary}{46}{section.6.7}%
-\contentsline {chapter}{\numberline {7}Conclusions and Evaluation}{47}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Achievements}{47}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Evaluation}{47}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Future Work}{47}{section.7.3}%
-\contentsline {chapter}{Bibliography}{47}{section.7.3}%
-\contentsline {chapter}{Appendices}{48}{section.7.3}%
-\contentsline {chapter}{\numberline {A}Project Plan}{48}{appendix.A}%
-\contentsline {chapter}{\numberline {B}Interim Report}{49}{appendix.B}%
-\contentsline {chapter}{\numberline {C}Supplementary Figures}{50}{appendix.C}%
-\contentsline {chapter}{\numberline {D}Software Implementation}{53}{appendix.D}%
-\contentsline {section}{\numberline {D.1}Repository Structure}{53}{section.D.1}%
-\contentsline {section}{\numberline {D.2}Dependencies}{53}{section.D.2}%
-\contentsline {section}{\numberline {D.3}Reproducing Results}{54}{section.D.3}%
-\contentsline {section}{\numberline {D.4}System Manual}{54}{section.D.4}%
-\contentsline {subsection}{\numberline {D.4.1}Prerequisites}{54}{subsection.D.4.1}%
-\contentsline {subsection}{\numberline {D.4.2}Installation}{54}{subsection.D.4.2}%
-\contentsline {subsection}{\numberline {D.4.3}LSEG Data Configuration}{54}{subsection.D.4.3}%
-\contentsline {subsection}{\numberline {D.4.4}Running the Analysis Notebooks}{54}{subsection.D.4.4}%
-\contentsline {subsection}{\numberline {D.4.5}Running the Dashboard}{55}{subsection.D.4.5}%
-\contentsline {subsection}{\numberline {D.4.6}Extending the Codebase}{55}{subsection.D.4.6}%
-\contentsline {section}{\numberline {D.5}Code Listings}{55}{section.D.5}%
-\contentsline {subsection}{\numberline {D.5.1}Cointegration Screening (\texttt {cointegration.py})}{56}{subsection.D.5.1}%
-\contentsline {subsection}{\numberline {D.5.2}Spread Characterisation (\texttt {spread\_analysis.py})}{57}{subsection.D.5.2}%
-\contentsline {subsection}{\numberline {D.5.3}OU-Implied Return Estimator (\texttt {return\_estimation.py})}{57}{subsection.D.5.3}%
-\contentsline {subsection}{\numberline {D.5.4}Markowitz Optimiser (\texttt {optimiser.py})}{58}{subsection.D.5.4}%
-\contentsline {subsection}{\numberline {D.5.5}Pairs Backtesting Engine (\texttt {engine.py})}{59}{subsection.D.5.5}%
-\contentsline {subsection}{\numberline {D.5.6}Efficient Frontier \& Spread-vs-Asset Comparison (\texttt {optimiser.py}, \texttt {return\_estimation.py})}{60}{subsection.D.5.6}%
-\contentsline {subsection}{\numberline {D.5.7}Performance Metrics (\texttt {metrics.py})}{61}{subsection.D.5.7}%
-\contentsline {subsection}{\numberline {D.5.8}Benchmark Suite (\texttt {benchmarks.py})}{62}{subsection.D.5.8}%
-\contentsline {subsection}{\numberline {D.5.9}Trade Logging \& Aggregate Metrics (\texttt {engine.py})}{63}{subsection.D.5.9}%
-\contentsline {subsection}{\numberline {D.5.10}Data Client with Incremental Cache (\texttt {refinitiv\_client.py})}{64}{subsection.D.5.10}%
-\contentsline {subsection}{\numberline {D.5.11}Universe Configuration (\texttt {modelling/config.py})}{65}{subsection.D.5.11}%
+\contentsline {subsubsection}{Paired Test: OU-Implied vs Historical MPT}{42}{section*.17}%
+\contentsline {subsubsection}{Sensitivity to Z-Score Thresholds and Transaction Costs}{42}{section*.18}%
+\contentsline {subsubsection}{Leave-One-Pair-Out Portfolio Robustness}{43}{section*.19}%
+\contentsline {chapter}{\numberline {6}Discussion}{44}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Interpretation of Results}{44}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Does OU-Implied $\mu $ Improve MPT?}{44}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Role of Spread Universe Structure}{44}{section.6.3}%
+\contentsline {section}{\numberline {6.4}OOS Cointegration Instability}{44}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Pairs Trading Signal Analysis}{44}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Limitations}{45}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Summary}{45}{section.6.7}%
+\contentsline {chapter}{\numberline {7}Conclusions and Evaluation}{46}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Achievements}{46}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Evaluation}{46}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Future Work}{46}{section.7.3}%
+\contentsline {chapter}{Bibliography}{46}{section.7.3}%
+\contentsline {chapter}{Appendices}{47}{section.7.3}%
+\contentsline {chapter}{\numberline {A}Project Plan}{47}{appendix.A}%
+\contentsline {chapter}{\numberline {B}Interim Report}{48}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Supplementary Figures}{49}{appendix.C}%
+\contentsline {chapter}{\numberline {D}Software Implementation}{52}{appendix.D}%
+\contentsline {section}{\numberline {D.1}Repository Structure}{52}{section.D.1}%
+\contentsline {section}{\numberline {D.2}Dependencies}{52}{section.D.2}%
+\contentsline {section}{\numberline {D.3}Reproducing Results}{53}{section.D.3}%
+\contentsline {section}{\numberline {D.4}System Manual}{53}{section.D.4}%
+\contentsline {subsection}{\numberline {D.4.1}Prerequisites}{53}{subsection.D.4.1}%
+\contentsline {subsection}{\numberline {D.4.2}Installation}{53}{subsection.D.4.2}%
+\contentsline {subsection}{\numberline {D.4.3}LSEG Data Configuration}{53}{subsection.D.4.3}%
+\contentsline {subsection}{\numberline {D.4.4}Running the Analysis Notebooks}{53}{subsection.D.4.4}%
+\contentsline {subsection}{\numberline {D.4.5}Running the Dashboard}{54}{subsection.D.4.5}%
+\contentsline {subsection}{\numberline {D.4.6}Extending the Codebase}{54}{subsection.D.4.6}%
+\contentsline {section}{\numberline {D.5}Code Listings}{54}{section.D.5}%
+\contentsline {subsection}{\numberline {D.5.1}Cointegration Screening (\texttt {cointegration.py})}{55}{subsection.D.5.1}%
+\contentsline {subsection}{\numberline {D.5.2}Spread Characterisation (\texttt {spread\_analysis.py})}{56}{subsection.D.5.2}%
+\contentsline {subsection}{\numberline {D.5.3}OU-Implied Return Estimator (\texttt {return\_estimation.py})}{56}{subsection.D.5.3}%
+\contentsline {subsection}{\numberline {D.5.4}Markowitz Optimiser (\texttt {optimiser.py})}{57}{subsection.D.5.4}%
+\contentsline {subsection}{\numberline {D.5.5}Pairs Backtesting Engine (\texttt {engine.py})}{58}{subsection.D.5.5}%
+\contentsline {subsection}{\numberline {D.5.6}Efficient Frontier \& Spread-vs-Asset Comparison (\texttt {optimiser.py}, \texttt {return\_estimation.py})}{59}{subsection.D.5.6}%
+\contentsline {subsection}{\numberline {D.5.7}Performance Metrics (\texttt {metrics.py})}{60}{subsection.D.5.7}%
+\contentsline {subsection}{\numberline {D.5.8}Benchmark Suite (\texttt {benchmarks.py})}{61}{subsection.D.5.8}%
+\contentsline {subsection}{\numberline {D.5.9}Trade Logging \& Aggregate Metrics (\texttt {engine.py})}{62}{subsection.D.5.9}%
+\contentsline {subsection}{\numberline {D.5.10}Data Client with Incremental Cache (\texttt {refinitiv\_client.py})}{63}{subsection.D.5.10}%
+\contentsline {subsection}{\numberline {D.5.11}Universe Configuration (\texttt {modelling/config.py})}{64}{subsection.D.5.11}%
