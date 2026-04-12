@@ -15,6 +15,7 @@
 \usepackage{fancyvrb}
 \usepackage{float}
 \usepackage{multirow}
+\usepackage{threeparttable}
 \usepackage{pdfpages}
 \usepackage{siunitx}
 \usepackage[a4paper, margin = 3cm, bottom = 2.5cm]{geometry}
@@ -664,11 +665,17 @@ TSM.N   & NVDA.O  &  0.476 &  3.071 & $-$1.340 & 0.817 & Yes & Yes & No \\
 BAC.N   & JPM.N   &  0.854 & $-$0.666 & $-$1.230 & 0.850 & Yes & Yes & No \\
 TGT.N   & COST.O  &  0.856 & $-$0.125 & $-$0.869 & 0.925 & Yes & Yes & No \\
 \bottomrule
-\multicolumn{9}{l}{\small Augmented Engle-Granger test; $p$-values and critical values via MacKinnon (1994, 2010) regression surface approximation, at 5\% significance ($p<0.05$). Log prices used throughout.} \\
-\multicolumn{9}{l}{\small $I(1)$ verified by ADF on levels (non-stationary) and first differences (stationary). Sorted by $p$-value.} \\
-\multicolumn{9}{l}{\small Source: Author's calculations on \texttt{01\_spread\_exploration.ipynb}.}
 \end{tabular}%
-}
+}% end resizebox
+\par\smallskip
+\begin{minipage}{\textwidth}
+\small
+Dep./Indep.: Dependent/Independent variable in the cointegrating regression $Y_t = \hat{\alpha} + \hat{\beta} X_t + \epsilon_t$.
+$\hat{\beta}$: hedge ratio; $\hat{\alpha}$: intercept. ADF Stat and $p$-val: residual ADF test statistic and MacKinnon (2010) $p$-value.
+$y{:}I(1)$, $x{:}I(1)$: whether each leg passes the unit root filter. Coint.: cointegrated at 5\% significance ($p < 0.05$).
+Source: Author's calculations on \texttt{01\_spread\_exploration.ipynb}.
+
+\end{minipage}
 \end{table}
 
 \section{Spread Characterisation}
@@ -685,17 +692,25 @@ present the spread characterisation results for the two cointegrated pairs.
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l l c c c c c c c}
 \toprule
-Dependent & Independent & Half-Life (days) & Hurst Exponent & Current $z$-Score & Spread Mean ($\mu_S$) & Spread Std ($\sigma_S$) & ADF Stat & ADF $p$-value \\
+Dep. & Indep. & Half-Life & Hurst & $z$-Score & $\mu_S$ & $\sigma_S$ & ADF Stat & ADF $p$ \\
+ & & (days) & Exp. & (current) & & & & \\
 \midrule
 GS.N  & MS.N  & 41.8 & 0.403 & 0.675 & 0.000 & 0.056 & $-$3.666 & 0.005 \\
 KO.N  & PEP.O & 40.3 & 0.421 & 0.809 & 0.000 & 0.047 & $-$3.469 & 0.009 \\
 DAL.N & UAL.O & 52.9 & 0.414 & 1.315 & 0.000 & 0.076 & $-$3.459 & 0.009 \\
 \bottomrule
-\multicolumn{9}{l}{\small Half-life estimated via AR(1)/OU regression: $\kappa = \ln(2)/\text{half-life}$ gives $\kappa \approx 0.0166$ (GS/MS) and $0.0172$ (KO/PEP).} \\
-\multicolumn{9}{l}{\small Hurst exponent $H < 0.5$ indicates mean-reverting (anti-persistent) dynamics. $z$-score uses 60-day rolling window at end of training period.} \\
-\multicolumn{9}{l}{\small Spread mean is zero by construction (demeaned OLS residuals). Source: Author's calculations on \texttt{01\_spread\_exploration.ipynb}.}
 \end{tabular}%
 }
+\par\smallskip
+\begin{minipage}{\textwidth}
+\small
+Dep.: Dependent leg; Indep.: Independent leg of the cointegrating regression. 
+$\mu_S$: spread mean; $\sigma_S$: spread standard deviation; ADF Stat/ADF $p$: residual ADF test statistic and MacKinnon (2010) $p$-value on the spread.\\
+Half-life estimated via AR(1)/OU regression: $\kappa = \ln(2)/\text{half-life}$ gives $\kappa \approx 0.0166$ (GS/MS), $0.0172$ (KO/PEP), and $0.0131$ (DAL/UAL).\\
+Hurst exponent $H < 0.5$ indicates mean-reverting (anti-persistent) dynamics. $z$-score uses 60-day rolling window at end of training period.\\
+Spread mean $\mu_S = 0$ by construction (demeaned OLS residuals). Source: Author's calculations on \texttt{01\_spread\_exploration.ipynb}.
+\end{minipage}
+
 \end{table}
 
 \begin{figure}[htbp]
@@ -710,7 +725,7 @@ DAL.N & UAL.O & 52.9 & 0.414 & 1.315 & 0.000 & 0.076 & $-$3.459 & 0.009 \\
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/01_spread_characterisation.pdf}
+    \includegraphics[width=\textwidth]{figures/01_spread_characterisation.pdf}
     \caption{Spread characterisation summary for the two cointegrated pairs
     (January 2019 -- December 2023).
     (a) Half-life of mean reversion in trading days; dashed line marks the 60-day threshold.
@@ -727,7 +742,7 @@ DAL.N & UAL.O & 52.9 & 0.414 & 1.315 & 0.000 & 0.076 & $-$3.459 & 0.009 \\
     \caption{Spread levels with $\pm1\sigma$ and $\pm2\sigma$ bands for each
     cointegrated pair over the in-sample period (January 2019 -- December 2023).
     The spread is defined as $S_t = \ln P^y_t - \hat{\beta}\ln P^x_t - \hat{\alpha}$.
-    (a)~KO/PEP; (b)~GS/MS.}
+    (a)~KO/PEP; (b)~GS/MS; (c)~DAL/UAL.}
     \label{fig:spread_levels}
 \end{figure}
 
@@ -738,7 +753,7 @@ DAL.N & UAL.O & 52.9 & 0.414 & 1.315 & 0.000 & 0.076 & $-$3.459 & 0.009 \\
     over the in-sample period (January 2019 -- December 2023). Dotted lines mark
     the $\pm2\sigma$ entry thresholds. The $z$-score at the end of the training
     window feeds directly into the OU-implied return estimation.
-    (a)~KO/PEP; (b)~GS/MS.}
+    (a)~KO/PEP; (b)~GS/MS; (c)~DAL/UAL.}
     \label{fig:spread_zscores}
 \end{figure}
 
@@ -748,7 +763,7 @@ DAL.N & UAL.O & 52.9 & 0.414 & 1.315 & 0.000 & 0.076 & $-$3.459 & 0.009 \\
     \caption{Rolling half-life of mean reversion (252-day window, EWM 21-day smoothed).
     Dashed line denotes the 60-day tradeability threshold.
     Shaded regions indicate periods where the smoothed half-life exceeded the threshold.
-    (a)~KO/PEP; (b)~GS/MS.}
+    (a)~KO/PEP; (b)~GS/MS; (c)~DAL/UAL.}
     \label{fig:spread_rolling_halflife}
 \end{figure}
 
@@ -766,54 +781,55 @@ the full IS vs OOS Engle-Granger $p$-value comparison across all
 nine candidate pairs.
 
 \begin{table}[htbp]
-    \centering
-    \caption{Spread statistics across in-sample (IS: January 2019 -- December
-    2023) and out-of-sample (OOS: January 2024 -- December 2025) periods,
-    constructed using in-sample hedge ratios.}
-    \label{tab:oos_spread_stats}
-    \resizebox{\textwidth}{!}{%
-    \begin{tabular}{lcccccccc}
-        \toprule
-        & \multicolumn{2}{c}{Mean} & \multicolumn{2}{c}{Std Dev} & \multicolumn{2}{c}{Min} & \multicolumn{2}{c}{Max} \\
-        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
-        Pair & IS & OOS & IS & OOS & IS & OOS & IS & OOS \\
-        \midrule
-        GS/MS   & 0.000 & $+$0.250 & 0.056 & 0.082 & $-$0.145 & $+$0.067 & $+$0.110 & $+$0.411 \\
-        KO/PEP  & 0.000 & $+$0.170 & 0.047 & 0.110 & $-$0.173 & $-$0.016 & $+$0.111 & $+$0.367 \\
-        DAL/UAL & 0.000 & $+$0.026 & 0.076 & 0.119 & $-$0.201 & $-$0.199 & $+$0.175 & $+$0.280 \\
-        \bottomrule
-        \multicolumn{9}{l}{\footnotesize GS/MS OOS minimum of $+0.067$ lies entirely above the IS mean, indicating the spread never revisited its historical equilibrium.} \\
-        \multicolumn{9}{l}{\footnotesize Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.}
-    \end{tabular}%
-    }
+\centering
+\caption{Spread statistics across in-sample (IS: January 2019 -- December 2023) and out-of-sample (OOS: January 2024 -- December 2025) periods, constructed using in-sample hedge ratios.\\}
+\label{tab:oos_spread_stats}
+\begin{tabular}{lcccccccc}
+\toprule
+& \multicolumn{2}{c}{Mean} & \multicolumn{2}{c}{Std Dev} & \multicolumn{2}{c}{Min} & \multicolumn{2}{c}{Max} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+Pair & IS & OOS & IS & OOS & IS & OOS & IS & OOS \\
+\midrule
+GS/MS   & 0.000 & $+$0.250 & 0.056 & 0.082 & $-$0.145 & $+$0.067 & $+$0.110 & $+$0.411 \\
+KO/PEP  & 0.000 & $+$0.170 & 0.047 & 0.110 & $-$0.173 & $-$0.016 & $+$0.111 & $+$0.367 \\
+DAL/UAL & 0.000 & $+$0.026 & 0.076 & 0.119 & $-$0.201 & $-$0.199 & $+$0.175 & $+$0.280 \\
+\bottomrule
+\end{tabular}
+
+\par\smallskip
+\begin{minipage}{15cm}
+\small
+The GS/MS OOS minimum (+0.067) exceeds the IS mean (0.000), indicating the spread never reverted to its historical equilibrium during the OOS period. \\
+Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
+\end{minipage}
 \end{table}
 
+
 \begin{table}[htbp]
-    \centering
-    \caption{Cointegration validation statistics across IS (January 2019 --
-    December 2023) and OOS (January 2024 -- December 2025) periods. ADF
-    $p$-values below 0.05 indicate spread stationarity at the 5\% significance
-    level. Half-life below 60 trading days and Hurst exponent below 0.5
-    indicate mean reversion.}
-    \label{tab:cointegration_validation}
-    \resizebox{\textwidth}{!}{%
-    \begin{tabular}{lccccccc}
-        \toprule
-        & \multicolumn{2}{c}{ADF $p$-value}
-        & \multicolumn{2}{c}{Half-Life (days)}
-        & \multicolumn{2}{c}{Hurst Exponent}
-        & OOS \\
-        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-        Pair & IS & OOS & IS & OOS & IS & OOS & $z$-score \\
-        \midrule
-        GS/MS   & 0.005 & 0.452 & 41.8 &  81.1 & 0.403 & 0.362 & 1.015 \\
-        KO/PEP  & 0.009 & 0.622 & 40.3 & 156.4 & 0.421 & 0.575 & 0.604 \\
-        DAL/UAL & 0.009 & 0.583 & 52.9 & 103.1 & 0.414 & 0.421 & 0.872 \\
-        \bottomrule
-        \multicolumn{8}{l}{\small Neither spread remains stationary OOS using IS hedge ratios. KO/PEP Hurst crosses above 0.5, indicating transition to near-random-walk behaviour.} \\
-        \multicolumn{8}{l}{\small Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.}
-    \end{tabular}%
-    }
+\centering
+\caption{Cointegration validation statistics across IS (January 2019 -- December 2023) and OOS (January 2024 -- December 2025) periods. ADF $p$-values below 0.05 indicate spread stationarity at the 5\% significance level. Half-life below 60 trading days and Hurst exponent below 0.5 indicate mean reversion.\\}
+\label{tab:cointegration_validation}
+\begin{tabular}{lccccccc}
+\toprule
+& \multicolumn{2}{c}{ADF $p$-value}
+& \multicolumn{2}{c}{Half-Life (days)}
+& \multicolumn{2}{c}{Hurst Exponent}
+& OOS \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+Pair & IS & OOS & IS & OOS & IS & OOS & $z$-score \\
+\midrule
+GS/MS   & 0.005 & 0.452 & 41.8 &  81.1 & 0.403 & 0.362 & 1.015 \\
+KO/PEP  & 0.009 & 0.622 & 40.3 & 156.4 & 0.421 & 0.575 & 0.604 \\
+DAL/UAL & 0.009 & 0.583 & 52.9 & 103.1 & 0.414 & 0.421 & 0.872 \\
+\bottomrule
+\end{tabular}
+
+\par\smallskip
+\begin{minipage}{15cm}
+\small
+Neither spread remains stationary OOS using IS hedge ratios. KO/PEP Hurst crosses above 0.5, indicating transition to near-random-walk behaviour.\\
+Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
+\end{minipage}
 \end{table}
 
 \begin{figure}[htbp]
@@ -836,7 +852,7 @@ nine candidate pairs.
     (January 2024). Horizontal lines and shading denote IS $\pm1\sigma$
     and $\pm2\sigma$ bands; persistent OOS displacement beyond these bounds
     indicates a structural break in the cointegrating relationship.
-    (a)~KO/PEP; (b)~GS/MS.}
+    (a)~KO/PEP; (b)~GS/MS; (c)~DAL/UAL.}
     \label{fig:spread_is_oos_concat}
 \end{figure}
 
@@ -848,7 +864,7 @@ nine candidate pairs.
     IS/OOS boundary. Shaded regions indicate $|z|>2\sigma$ exceedances.
     Persistent non-zero $z$-scores in the OOS period are consistent with
     a shift in the spread equilibrium level.
-    (a)~KO/PEP; (b)~GS/MS.}
+    (a)~KO/PEP; (b)~GS/MS; (c)~DAL/UAL.}
     \label{fig:zscore_is_oos}
 \end{figure}
 
@@ -860,7 +876,7 @@ nine candidate pairs.
     bold lines show 21-day exponentially weighted smoothed values. The dashed
     horizontal line marks the 60-day tradability threshold. The dashed vertical
     line marks the IS/OOS boundary.
-    (a)~KO/PEP; (b)~GS/MS.}
+    (a)~KO/PEP; (b)~GS/MS; (c)~DAL/UAL.}
     \label{fig:rolling_halflife_is_oos}
 \end{figure}
 
@@ -869,36 +885,44 @@ nine candidate pairs.
 \caption{IS vs OOS Engle-Granger $p$-values and hedge ratio drift across all 16 candidate pairs.
 Sorted by IS $p$-value. Hedge ratio drift = $|\hat{\beta}_{\text{OOS}} - \hat{\beta}_{\text{IS}}|$.}
 \label{tab:cointegration_comparison}
-\resizebox{\textwidth}{!}{%
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{l cc cc c cc}
 \toprule
 & \multicolumn{2}{c}{EG $p$-value} & \multicolumn{2}{c}{Hedge Ratio $\hat{\beta}$} & Drift & \multicolumn{2}{c}{Cointegrated} \\
 \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){7-8}
 Pair & IS & OOS & IS & OOS & $|\Delta\hat{\beta}|$ & IS & OOS \\
 \midrule
-GS.N/MS.N    & \textbf{0.020} & \textbf{0.019} &  0.780 &  1.120 & 0.340 & \textbf{Yes} & \textbf{Yes} \\
-KO.N/PEP.O   & \textbf{0.035} & 0.224          &  0.641 & $-$0.350 & 0.991 & \textbf{Yes} & No \\
-DAL.N/UAL.O  & \textbf{0.036} & 0.621          &  0.672 &  0.429 & 0.242 & \textbf{Yes} & No \\
-CVX.N/XOM.N  & 0.064          & 0.118          &  0.698 &  0.470 & 0.228 & No           & No \\
-AMZN.O/GOOGL.O & 0.305        & 0.185          &  0.630 &  0.440 & 0.190 & No           & No \\
-SLB.N/HAL.N  & 0.339          & 0.242          &  0.997 &  0.676 & 0.321 & No           & No \\
-NVDA.O/AMD.O & 0.368          & 0.060          &  0.811 &  0.293 & 0.518 & No           & No \\
-AMZN.O/MSFT.O & 0.455         & 0.265          &  0.516 &  0.897 & 0.382 & No           & No \\
-MRK.N/ABBV.N & 0.539          & 0.507          &  0.431 & $-$0.318 & 0.749 & No          & No \\
-INTC.O/AMD.O & 0.550          & 0.076          & $-$0.081 & 0.831 & 0.912 & No          & No \\
-JNJ.N/PFE.N  & 0.576          & 0.182          &  0.423 & $-$0.166 & 0.589 & No          & No \\
-INTC.O/TSM.N & 0.585          & 0.731          & $-$0.087 & $-$0.212 & 0.124 & No        & No \\
-META.O/GOOGL.O & 0.685        & 0.290          &  0.543 &  0.525 & 0.018 & No           & No \\
-NVDA.O/TSM.N & 0.817          & 0.012          &  0.476 &  1.120 & 0.644 & No           & No$^{\dagger}$ \\
-BAC.N/JPM.N  & 0.850          & 0.384          &  0.854 &  0.697 & 0.157 & No           & No \\
-TGT.N/COST.O & 0.925          & 0.162          &  0.856 & $-$0.318 & 1.174 & No          & No \\
+GS.N/MS.N      & \textbf{0.020} & \textbf{0.019} &  0.780 &  1.120 & 0.340 & \textbf{Yes} & \textbf{Yes} \\
+KO.N/PEP.O    & \textbf{0.035} & 0.224          &  0.641 & $-$0.350 & 0.991 & \textbf{Yes} & No \\
+DAL.N/UAL.O   & \textbf{0.036} & 0.621          &  0.672 &  0.429 & 0.242 & \textbf{Yes} & No \\
+CVX.N/XOM.N   & 0.064          & 0.118          &  0.698 &  0.470 & 0.228 & No & No \\
+AMZN.O/GOOGL.O & 0.305         & 0.185          &  0.630 &  0.440 & 0.190 & No & No \\
+SLB.N/HAL.N   & 0.339          & 0.242          &  0.997 &  0.676 & 0.321 & No & No \\
+NVDA.O/AMD.O  & 0.368          & 0.060          &  0.811 &  0.293 & 0.518 & No & No \\
+AMZN.O/MSFT.O & 0.455          & 0.265          &  0.516 &  0.897 & 0.382 & No & No \\
+MRK.N/ABBV.N  & 0.539          & 0.507          &  0.431 & $-$0.318 & 0.749 & No & No \\
+INTC.O/AMD.O  & 0.550          & 0.076          & $-$0.081 & 0.831 & 0.912 & No & No \\
+JNJ.N/PFE.N   & 0.576          & 0.182          &  0.423 & $-$0.166 & 0.589 & No & No \\
+INTC.O/TSM.N  & 0.585          & 0.731          & $-$0.087 & $-$0.212 & 0.124 & No & No \\
+META.O/GOOGL.O & 0.685         & 0.290          &  0.543 &  0.525 & 0.018 & No & No \\
+NVDA.O/TSM.N  & 0.817          & 0.012          &  0.476 &  1.120 & 0.644 & No & No$^{\dagger}$ \\
+BAC.N/JPM.N   & 0.850          & 0.384          &  0.854 &  0.697 & 0.157 & No & No \\
+TGT.N/COST.O  & 0.925          & 0.162          &  0.856 & $-$0.318 & 1.174 & No & No \\
 \bottomrule
-\multicolumn{8}{l}{\small $^{\dagger}$NVDA/TSM: OOS $p$-value passes threshold but $y$ fails $I(1)$ test --- cointegration requires both series to be $I(1)$.} \\
-\multicolumn{8}{l}{\small KO/PEP hedge ratio sign reversal ($+0.641 \to -0.350$) and DAL/UAL OOS $p$-value surge indicate structural breaks in the cointegrating relationship.} \\
-\multicolumn{8}{l}{\small Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.}
 \end{tabular}%
-}
+}% end resizebox
+
+\par\smallskip
+\begin{minipage}{15cm}
+\small
+$^{\dagger}$NVDA/TSM: OOS $p$-value passes threshold but $y$ fails $I(1)$ test --- cointegration requires both series to be $I(1)$.\\
+KO/PEP hedge ratio sign reversal ($+0.641 \to -0.350$) and DAL/UAL OOS $p$-value surge indicate structural breaks in the cointegrating relationship.\\
+Source: Author's calculations on \texttt{02\_cointegration\_validation.ipynb}.
+\end{minipage}
 \end{table}
+
+\FloatBarrier
+
 \subsection{KPSS Complement and Chow Structural Break Tests}
 
 Table~\ref{tab:kpss_results} applies the KPSS test alongside ADF on both IS and OOS spreads.
@@ -977,9 +1001,9 @@ Pair & End-of-IS $z$-Score & OU-Implied $\mu$ (ann.) & Historical $\mu$ (ann.) &
 GS/MS  & $+$1.739 & $-$10.69\% & GS: $+$11.9\%, MS: $+$15.5\% & Spread well above mean & Yes \\
 KO/PEP & $-$0.759 & $+$1.93\%  & KO: $+$6.4\%,\ PEP: $+$8.3\% & Spread below mean      & Yes \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize OU-implied $\mu$ computed via rolling 60-day OU model, annualised at 252 trading days per year.} \\
-\multicolumn{6}{l}{\footnotesize Historical $\mu$ is the annualised sample mean of daily returns over the IS period.} \\
-\multicolumn{6}{l}{\footnotesize Source: Author's calculations on \texttt{03\_return\_estimation.ipynb}.}
+\multicolumn{6}{l}{\small OU-implied $\mu$ computed via rolling 60-day OU model, annualised at 252 trading days per year.} \\
+\multicolumn{6}{l}{\small Historical $\mu$ is the annualised sample mean of daily returns over the IS period.} \\
+\multicolumn{6}{l}{\small Source: Author's calculations on \texttt{03\_return\_estimation.ipynb}.}
 \end{tabular}%
 }
 \end{table}
@@ -1089,7 +1113,7 @@ bootstrap resamples (with replacement) of the daily return series.
 \centering
 \caption{Bootstrap 95\% confidence intervals for annualised Sharpe ratio (10{,}000 resamples,
 OOS period: January 2024 -- December 2025). ``Sig.\ $> 0$'' indicates whether the lower bound
-of the CI exceeds zero.}
+of the CI exceeds zero. \\}
 \label{tab:bootstrap_sharpe}
 \begin{tabular}{lrrrr}
 \toprule
@@ -1108,6 +1132,8 @@ S\&P 500 (SPY)      & 1.110 & $-$0.227 & $+$2.506 & No \\
 \end{tabular}
 \end{table}
 
+\FloatBarrier
+
 \subsubsection{Paired Test: OU-Implied vs Historical MPT}
 
 To test whether the Sharpe advantage of OU-Implied Max-Sharpe over Historical Max-Sharpe
@@ -1118,7 +1144,7 @@ of OU Max-Sharpe equals that of Hist Max-Sharpe.
 \begin{table}[htbp]
 \centering
 \caption{Hypothesis test results: OU Max-Sharpe vs Hist Max-Sharpe daily returns
-(OOS, $N = 501$ trading days). Two-sided tests.}
+(OOS, $N = 501$ trading days). Two-sided tests.\\}
 \label{tab:paired_test}
 \begin{tabular}{lrrl}
 \toprule
@@ -1134,6 +1160,8 @@ Wilcoxon signed-rank    & $W = 62557$ & 0.922 & Fail to reject $H_0$ \\
 \end{tabular}
 \end{table}
 
+\FloatBarrier
+
 \subsubsection{Sensitivity to Z-Score Thresholds and Transaction Costs}
 
 Table~\ref{tab:sensitivity} presents Sharpe ratios from the per-pair $z$-score backtest
@@ -1143,7 +1171,7 @@ costs in $\{0, 5, 10, 20, 30\}$ bps. Rows are entry $z$-scores; columns are tran
 \begin{table}[htbp]
 \centering
 \caption{Sensitivity of per-pair Sharpe ratio to entry $z$-score threshold and transaction
-costs (bps). OOS period: January 2024 -- December 2025. Stop-loss fixed at $z_{\text{entry}} + 2.0$.}
+costs (bps). OOS period: January 2024 -- December 2025. Stop-loss fixed at $z_{\text{entry}} + 2.0$.\\}
 \label{tab:sensitivity}
 
 \medskip
@@ -1189,12 +1217,20 @@ Entry $z$ & 0 bps & 5 bps & 10 bps & 20 bps & 30 bps \\
 2.5 & $-$0.339 & $-$0.367 & $-$0.396 & $-$0.453 & $-$0.510 \\
 3.0 & $-$1.146 & $-$1.165 & $-$1.185 & $-$1.223 & $-$1.260 \\
 \bottomrule
-\multicolumn{6}{l}{\small GS/MS shows positive Sharpe at $z = 2.5$ and $3.0$ even with 30 bps costs, suggesting} \\
-\multicolumn{6}{l}{\small the signal survives at higher entry thresholds. KO/PEP is negative across all configurations,} \\
-\multicolumn{6}{l}{\small consistent with structural breakdown. DAL/UAL is borderline at $z = 1.5$ with low costs.} \\
-\multicolumn{6}{l}{\small Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.}
-\end{tabular}
+\end{tabular}   % <-- close tabular BEFORE footnotes
+
+\smallskip
+\begin{minipage}{0.95\linewidth}
+\small GS/MS shows positive Sharpe at $z = 2.5$ and $3.0$ even with 30 bps costs,
+suggesting the signal survives at higher entry thresholds. KO/PEP is negative
+across all configurations, consistent with structural breakdown. DAL/UAL is
+borderline at $z = 1.5$ with low costs.
+Source: Author's calculations on \texttt{04\_backtest\_results.ipynb}.
+\end{minipage}
+
 \end{table}
+
+\FloatBarrier
 
 \subsubsection{Leave-One-Pair-Out Portfolio Robustness}
 
@@ -1205,7 +1241,7 @@ on the remaining spreads, and OOS performance is recomputed.
 \begin{table}[htbp]
 \centering
 \caption{Leave-one-pair-out (LOPO) robustness check for the OU Max-Sharpe portfolio.
-Full-portfolio Sharpe ratio: 0.963.}
+Full-portfolio Sharpe ratio: 0.963.\\}
 \label{tab:lopo}
 \begin{tabular}{lrrrr}
 \toprule
