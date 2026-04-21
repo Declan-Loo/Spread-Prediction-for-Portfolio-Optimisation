@@ -1,6 +1,6 @@
 # Asset-Pair-Portfolio-Optimiser
 
-Developed as part of my Final Year Project for UCL BSc Computer Science. The project estimates expected returns by modelling the mean-reverting spread between cointegrated asset pairs, then uses those estimates to construct Markowitz-optimal portfolios. It compares this **OU-Implied MPT** approach against traditional **Historical Mean-Variance** optimisation over an out-of-sample test period (January 2024 -- December 2025).
+Developed as part of my Final Year Project for UCL BSc Computer Science. The project estimates expected returns by modelling the mean-reverting spread between cointegrated asset pairs, then uses those estimates to construct Markowitz-optimal portfolios. It compares this **OU-Implied MPT** approach against traditional **Historical Mean-Variance** optimisation over an out-of-sample test period (January 2024 - December 2025).
 
 ## Overview
 
@@ -147,4 +147,4 @@ Full dependency list: [`requirements.txt`](requirements.txt)
 
 ## Project Context
 
-This project was submitted in partial fulfilment of the BSc Computer Science degree at University College London (UCL), academic year 2025--2026 (COMP0029 Final Year Project).
+This project was submitted in partial fulfilment of the BSc Computer Science degree at University College London (UCL), academic year 2025-2026 (COMP0029 Final Year Project).
