@@ -18,7 +18,7 @@ The pipeline:
 ## Repository Structure
 
 ```text
-Asset-Pair-Portfolio-Optimiser/
+Spread-Prediction-for-Portfolio-Optimisation/
 ├── data/
 │   ├── raw/                        # Cached LSEG API price CSVs
 │   └── processed/                  # Processed outputs (CSVs, spread statistics)
@@ -65,7 +65,7 @@ Asset-Pair-Portfolio-Optimiser/
 
 ```bash
 git clone <repo-url>
-cd Asset-Pair-Portfolio-Optimiser
+cd Spread-Prediction-for-Portfolio-Optimisation
 pip install -r requirements.txt
 ```
 
