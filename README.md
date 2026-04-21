@@ -21,8 +21,9 @@ The pipeline:
 Asset-Pair-Portfolio-Optimiser/
 ├── data/
 │   ├── raw/                        # Cached LSEG API price CSVs
-│   └── processed/                  # Processed outputs
+│   └── processed/                  # Processed outputs (CSVs, spread statistics)
 ├── src/
+│   ├── config.py                   # Top-level path and environment config
 │   ├── data/
 │   │   ├── refinitiv_client.py     # LSEG Workspace API wrapper with incremental caching
 │   │   └── yfinance_sp500.py       # S&P 500 benchmark data (yfinance fallback)
@@ -30,8 +31,8 @@ Asset-Pair-Portfolio-Optimiser/
 │   │   ├── config.py               # Tickers, candidate pairs, date ranges
 │   │   ├── cointegration.py        # Engle-Granger two-step test; screen_pairs()
 │   │   ├── spread_analysis.py      # Spread construction, z-scores, half-life, Hurst exponent
-│   │   ├── return_estimation.py    # Historical mean, EWMA, OU-implied returns; covariance shrinkage
-│   │   └── optimiser.py            # OLS hedge ratio, min-variance, max-Sharpe, efficient frontier
+│   │   ├── return_estimation.py    # OU-implied and historical mean returns; covariance shrinkage
+│   │   └── optimiser.py            # Min-variance and max-Sharpe portfolio optimisation
 │   ├── backtesting/
 │   │   ├── engine.py               # Z-score mean-reversion backtester with transaction costs
 │   │   ├── metrics.py              # Sharpe ratio, max drawdown, volatility reduction
@@ -46,10 +47,10 @@ Asset-Pair-Portfolio-Optimiser/
 │       ├── 04_backtest_results.ipynb         # Portfolio backtest and benchmark comparison
 │       └── figures/                          # Exported PDF figures
 ├── FYP Docs/
-│   └── Report/
-│       └── main.tex                # Final thesis
+│   ├── FYP Project Plan.pdf
+│   ├── FYP Interim Report.pdf
+│   └── Spread Prediction for Portfolio Optimisation.pdf   # Final thesis
 ├── lseg-data.config.json           # LSEG Workspace session config (gitignored)
-├── .env                            # EIKON_API_KEY (gitignored)
 ├── requirements.txt
 └── README.md
 ```
@@ -109,7 +110,7 @@ Open `http://localhost:8501` in your browser. The dashboard provides:
 
 - **Cointegration screening** — Engle-Granger p-values for all 16 candidate pairs
 - **Spread analysis** — z-score bands, rolling half-life, Hurst exponent
-- **Return estimation** — comparison of historical mean, EWMA, and OU-implied estimates
+- **Return estimation** — comparison of OU-implied and historical mean estimates
 - **Backtesting** — configurable z-score entry/exit thresholds with transaction costs
 - **Portfolio optimisation** — efficient frontiers and weight allocation for both approaches
 - **Benchmark comparison** — Sharpe, drawdown, and volatility metrics vs S&P 500 and buy-and-hold
