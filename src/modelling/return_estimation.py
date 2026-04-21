@@ -2,13 +2,13 @@
 Return estimation for spread-based and traditional MPT portfolios.
 
 Provides expected-return estimators (historical mean, EWMA, OU-implied)
-and covariance estimators (sample, Ledoit-Wolf shrinkage, OAS) for use in
+and covariance estimators (sample, Ledoit-Wolf shrinkage) for use in
 Markowitz mean-variance optimisation across spread and asset return streams.
 """
 
 import numpy as np
 import pandas as pd
-from sklearn.covariance import LedoitWolf, OAS
+from sklearn.covariance import LedoitWolf
 
 from .spread_analysis import compute_spread, compute_half_life
 
@@ -333,12 +333,15 @@ def shrinkage_covariance(
     estimator: str = "lw",
 ) -> pd.DataFrame:
     """
-    Shrinkage covariance estimator (Ledoit-Wolf or OAS).
+    Ledoit-Wolf analytical shrinkage covariance estimator.
 
-    Uses sklearn's analytical implementations, which are more numerically
-    stable than a manual implementation and expose the OAS estimator —
-    Oracle Approximating Shrinkage — which outperforms classic Ledoit-Wolf
-    on small samples (e.g. 3 spreads over ~1500 days).
+    Shrinks the sample covariance toward a scaled identity matrix using
+    the closed-form Ledoit & Wolf (2004) optimal shrinkage intensity.
+    Chosen over the sample covariance to reduce estimation error and ensure
+    positive definiteness; chosen over OAS because the low-dimensional
+    regime here (n=3 spreads or n=6 assets, T≈1500 days, p/n ≈ 0.002–0.004)
+    already yields a well-conditioned sample covariance, so the two
+    estimators converge and LW has stronger theoretical guarantees.
 
     Parameters
     ----------
@@ -347,11 +350,6 @@ def shrinkage_covariance(
     annualise : bool
         If True, scale by ``periods_per_year``.
     periods_per_year : int
-    estimator : {"lw", "oas"}
-        ``"lw"``  — Ledoit & Wolf (2004) analytical shrinkage toward a
-                    scaled identity matrix.
-        ``"oas"`` — Oracle Approximating Shrinkage (Chen et al. 2010);
-                    tends to give lower MSE when n_assets << n_samples.
 
     Returns
     -------
@@ -359,7 +357,7 @@ def shrinkage_covariance(
         Shrinkage covariance matrix.
     """
     clean = returns.dropna()
-    model = OAS() if estimator == "oas" else LedoitWolf()
+    model = LedoitWolf()
     model.fit(clean.values.astype(float))
     cov = pd.DataFrame(
         model.covariance_,
@@ -405,10 +403,10 @@ def spread_vs_asset_estimates(
         EWMA span (ignored when ``method="historical"``).
     annualise : bool
     periods_per_year : int
-    cov_estimator : {"sample", "lw", "oas"}
+    cov_estimator : {"sample", "lw"}
         Covariance estimator to use for both spread and asset covariances.
-        ``"sample"`` uses the raw sample covariance; ``"lw"`` and ``"oas"``
-        apply sklearn shrinkage estimators (see ``shrinkage_covariance``).
+        ``"sample"`` uses the raw sample covariance; ``"lw"`` applies
+        Ledoit-Wolf shrinkage (see ``shrinkage_covariance``).
 
     Returns
     -------
@@ -465,11 +463,10 @@ def spread_vs_asset_estimates(
         )
 
     # --- Covariance ---
-    if cov_estimator in ("lw", "oas"):
+    if cov_estimator == "lw":
         cov_fn = lambda r: shrinkage_covariance(
             r, annualise=annualise,
             periods_per_year=periods_per_year,
-            estimator=cov_estimator,
         )
     else:
         cov_fn = lambda r: sample_covariance(
